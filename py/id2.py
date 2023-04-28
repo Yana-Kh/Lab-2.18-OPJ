@@ -199,19 +199,17 @@ def main(command_line=None):
         required=True,
         help="Required surname"
     )
+    # Выполнить разбор аргументов командной строки.
+    args = parser.parse_args(command_line)
+
+    # Подключение к окружению
+    data_file = args.data
 
     dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
     if os.path.exists(dotenv_path):
         load_dotenv(dotenv_path)
-
-    # Выполнить разбор аргументов командной строки.
-    args = parser.parse_args(command_line)
-
-    # Получить имя файла.
-    data_file = args.data
-
     if not data_file:
-        data_file = os.environ.get("HUMAN_DATA")
+        data_file = os.getenv("HUMAN_DATA")
     if not data_file:
         print("The data file name is absent", file=sys.stderr)
         sys.exit(1)
@@ -244,7 +242,7 @@ def main(command_line=None):
 
     # Сохранить данные в файл, если список людей был изменен.
     if is_dirty:
-        save_humans(args.filename, people)
+        save_humans(data_file, people)
 
 
 if __name__ == "__main__":
